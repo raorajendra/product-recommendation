@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>API Test</title>
+</head>
+<body>
+  <form id="form">
+    <label for="user">User:</label>
+    <input type="text" id="user" name="user" placeholder="Enter user ID">
+    <button type="submit">Get Recommendation</button>
+  </form>
+  <div id="result"></div>
+  <script>
+    document.getElementById("form").addEventListener("submit", function(event) {
+      event.preventDefault();
+      var user = document.getElementById("user").value;
+      fetch("http://localhost:5000/getProductReccomendation?user=" + user)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("this user does not exists in our dataset!");
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log(data);
+          var strings = data.recommand;
+          var resultHtml = "<table>";
+          resultHtml += "<tr><th>Index</th><th>Reccomendation</th></tr>";
+          for (var i = 0; i < strings.length; i++) {
+            resultHtml += "<tr><td>" + i + "</td><td>" + strings[i] + "</td></tr>";
+          }
+          resultHtml += "</table>";
+          
+          // check if the API response contains only a single recommendation
+          if (strings.length === 1) {
+            alert("Received a single recommendation from the API!");
+            resultHtml = "";
+          }
+          
+          document.getElementById("result").innerHTML = resultHtml;
+        })
+        .catch(error => {
+          alert(error.message);
+          document.getElementById("result").innerHTML = "";
+        });
+    });
+  </script>
+</body>
+</html>
