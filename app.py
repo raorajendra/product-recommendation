@@ -7,6 +7,7 @@ from model import get_top_5_recommondation
 app=Flask(__name__)
 CORS(app)
 
+
 import warnings
 warnings.filterwarnings("ignore")
 @app.route('/hello')
